@@ -3,10 +3,12 @@
 
 import argparse
 import json
+import re
 import sys
 from datetime import datetime
 
 import requests
+import yaml
 from tabulate import tabulate
 
 # Constants
@@ -113,9 +115,49 @@ def build_table_row(model):
     ]
 
 
+def format_description(desc):
+    """Format description with sentence-per-line, 2-space indent."""
+    if not desc:
+        return "  (no description)"
+    # Split on sentence boundaries (. followed by space or newline)
+    sentences = re.split(r'\.(?:\s+|\n)', desc.strip())
+    lines = []
+    for s in sentences:
+        s = s.strip()
+        if s:
+            # Add period back if not ending with punctuation
+            if not s.endswith(('.', '!', '?')):
+                s += '.'
+            lines.append(f"  {s}")
+    return '\n'.join(lines)
+
+
 def print_full_model(model):
-    """Print full model entry as formatted JSON."""
-    print(json.dumps(model, indent=2))
+    """Print full model entry in YAML-ish format with description first."""
+    model = model.copy()
+
+    # Extract and format description
+    desc = model.pop("description", "")
+    print(f"\ndescription:\n{format_description(desc)}\n")
+
+    # Prominent fields with aligned colons
+    prominent = ["name", "id", "canonical_slug", "hugging_face_id", "created", "context_length"]
+    max_len = max(len(k) for k in prominent)
+
+    for key in prominent:
+        value = model.pop(key, None)
+        if value == "":
+            value = '""'
+        elif value is None:
+            value = "null"
+        print(f"{key}:{' ' * (max_len - len(key))}  {value}")
+
+    print()
+
+    # Rest as YAML
+    print(yaml.dump(model, default_flow_style=False, allow_unicode=True, sort_keys=False), end="")
+
+    print()
 
 
 def print_comparison_table(models):
