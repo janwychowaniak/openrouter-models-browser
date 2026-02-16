@@ -15,15 +15,15 @@ pip install -r requirements.txt
 ./ormodels.py -h
 
 # Search for models by name, ID, or modality
-./ormodels.py -f claude
-./ormodels.py -f gpt
-./ormodels.py -f "text->text"
+./ormodels.py claude
+./ormodels.py gpt
+./ormodels.py "text->text"
 
 # Combine multiple searches
-./ormodels.py -f claude -f gemini
+./ormodels.py claude gemini
 
 # Get full details for exact ID match
-./ormodels.py -f anthropic/claude-3.5-sonnet
+./ormodels.py anthropic/claude-3.5-sonnet
 ```
 
 ## Output

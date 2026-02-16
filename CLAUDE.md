@@ -13,22 +13,22 @@ A Python CLI tool for browsing and comparing AI models available through the Ope
 pip install -r requirements.txt
 
 # Run the tool
-./ormodels.py -f <query>
+./ormodels.py <query>
 
 # Examples
-./ormodels.py -h                        # Show help
-./ormodels.py -f claude                 # Search for Claude models
-./ormodels.py -f anthropic/claude-3.5-sonnet  # Exact ID match (full YAML)
-./ormodels.py -f claude -f gemini             # Combine multiple searches
+./ormodels.py -h                       # Show help
+./ormodels.py claude                   # Search for Claude models
+./ormodels.py anthropic/claude-3.5-sonnet  # Exact ID match (full YAML)
+./ormodels.py claude gemini            # Combine multiple searches
 ```
 
 ## CLI Interface
 
 ```sh
-./ormodels.py -h              # Print usage
-./ormodels.py -f ID           # Print full model entry if exact match found
-./ormodels.py -f PHRASE       # Build comparison table for all matches
-./ormodels.py -f A -f B       # Combine multiple searches (deduplicated)
+./ormodels.py -h          # Print usage
+./ormodels.py ID          # Print full model entry if exact match found
+./ormodels.py PHRASE      # Build comparison table for all matches
+./ormodels.py A B         # Combine multiple searches (deduplicated)
 ```
 
 ## Table Output Columns
@@ -59,7 +59,7 @@ ormodels.py
 ├── build_table_row()        - Extract 9 columns from model dict
 ├── print_full_model()       - YAML output with description first
 ├── print_comparison_table() - tabulate output
-├── parse_args()             - argparse with -f/--find
+├── parse_args()             - argparse with positional QUERY
 └── main()                   - Entry point
 ```
 
