@@ -68,6 +68,18 @@ def format_timestamp(unix_ts):
         return "N/A"
 
 
+def format_tokens(count):
+    """Format token count as 'NUMBER | NUMBERk' for easy copy and comprehension."""
+    if not count:
+        return "N/A"
+    try:
+        count = int(count)
+        k_value = count // 1000
+        return f"{count} | {k_value}k"
+    except (ValueError, TypeError):
+        return "N/A"
+
+
 def search_models(models, query):
     """Case-insensitive search across id, name, and modality fields."""
     query_lower = query.lower()
@@ -92,12 +104,12 @@ def build_table_row(model):
         model.get("id", "N/A"),
         model.get("name", "N/A"),
         format_timestamp(model.get("created")),
-        model.get("context_length", "N/A"),
+        format_tokens(model.get("context_length")),
         architecture.get("modality", "N/A"),
         architecture.get("tokenizer", "N/A"),
         format_price_dollars(pricing.get("prompt")),
         format_price_dollars(pricing.get("completion")),
-        top_provider.get("max_completion_tokens", "N/A"),
+        format_tokens(top_provider.get("max_completion_tokens")),
     ]
 
 
