@@ -119,9 +119,10 @@ def parse_args():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  %(prog)s -f claude           Search for models matching "claude"
-  %(prog)s -f openai/gpt-4     Exact ID match shows full JSON
-  %(prog)s -f "text->text"     Search by modality
+  %(prog)s -f claude              Search for models matching "claude"
+  %(prog)s -f openai/gpt-4        Exact ID match shows full JSON
+  %(prog)s -f "text->text"        Search by modality
+  %(prog)s -f claude -f gemini    Combine multiple searches
 
 Pricing is shown in dollars per 1M tokens.
         """,
@@ -130,7 +131,8 @@ Pricing is shown in dollars per 1M tokens.
         "-f",
         "--find",
         metavar="QUERY",
-        help="Search for models by ID, name, or modality. Exact ID match shows full JSON.",
+        action="append",
+        help="Search for models by ID, name, or modality. Can be specified multiple times. Exact ID match (single -f) shows full JSON.",
     )
     return parser.parse_args()
 
@@ -146,26 +148,32 @@ def main():
 
     models = fetch_models()
 
-    # Check for exact ID match first
-    exact_match = None
-    for model in models:
-        if model.get("id") == args.find:
-            exact_match = model
-            break
+    # Single query: check for exact ID match first
+    if len(args.find) == 1:
+        query = args.find[0]
+        for model in models:
+            if model.get("id") == query:
+                print_full_model(model)
+                return
 
-    if exact_match:
-        print_full_model(exact_match)
-        return
+    # Collect matches from all queries (deduplicated by id)
+    seen_ids = set()
+    all_matches = []
+    for query in args.find:
+        for match in search_models(models, query):
+            model_id = match.get("id")
+            if model_id not in seen_ids:
+                seen_ids.add(model_id)
+                all_matches.append(match)
 
-    # Otherwise, perform search
-    matches = search_models(models, args.find)
-
-    if not matches:
-        print(f"No models found matching '{args.find}'", file=sys.stderr)
+    if not all_matches:
+        queries = ", ".join(f"'{q}'" for q in args.find)
+        print(f"No models found matching {queries}", file=sys.stderr)
         sys.exit(1)
 
-    print(f"Found {len(matches)} model(s) matching '{args.find}':\n")
-    print_comparison_table(matches)
+    queries = ", ".join(f"'{q}'" for q in args.find)
+    print(f"Found {len(all_matches)} model(s) matching {queries}:\n")
+    print_comparison_table(all_matches)
 
 
 if __name__ == "__main__":
