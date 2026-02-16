@@ -42,18 +42,18 @@ def fetch_models():
         sys.exit(1)
 
 
-def format_price_cents(price_str):
-    """Convert per-token price string to cents per 1M tokens.
+def format_price_dollars(price_str):
+    """Convert per-token price string to dollars per 1M tokens.
 
-    API gives per-token price in dollars (e.g., "0.0000003").
-    Convert to cents per 1M tokens: float(price) * 100_000_000
+    API gives per-token price in dollars (e.g., "0.00000025").
+    Convert to dollars per 1M tokens: float(price) * 1_000_000
     """
     if not price_str:
         return "N/A"
     try:
         price = float(price_str)
-        cents_per_million = price * 100_000_000
-        return f"${cents_per_million:.2f}"
+        dollars_per_million = price * 1_000_000
+        return f"${dollars_per_million:.2f}"
     except (ValueError, TypeError):
         return "N/A"
 
@@ -95,8 +95,8 @@ def build_table_row(model):
         model.get("context_length", "N/A"),
         architecture.get("modality", "N/A"),
         architecture.get("tokenizer", "N/A"),
-        format_price_cents(pricing.get("prompt")),
-        format_price_cents(pricing.get("completion")),
+        format_price_dollars(pricing.get("prompt")),
+        format_price_dollars(pricing.get("completion")),
         top_provider.get("max_completion_tokens", "N/A"),
     ]
 
@@ -123,7 +123,7 @@ Examples:
   %(prog)s -f openai/gpt-4     Exact ID match shows full JSON
   %(prog)s -f "text->text"     Search by modality
 
-Pricing is shown in cents per 1M tokens.
+Pricing is shown in dollars per 1M tokens.
         """,
     )
     parser.add_argument(
