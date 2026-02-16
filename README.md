@@ -19,6 +19,9 @@ pip install -r requirements.txt
 ./ormodels.py -f gpt
 ./ormodels.py -f "text->text"
 
+# Combine multiple searches
+./ormodels.py -f claude -f gemini
+
 # Get full JSON for exact ID match
 ./ormodels.py -f anthropic/claude-3.5-sonnet
 ```
@@ -30,7 +33,7 @@ pip install -r requirements.txt
 When searching, displays a comparison table with columns:
 - ID, NAME, CREATED, CONTEXT_LENGTH, MODALITY, TOKENIZER, PROMPT, COMPLETION, MAX_COMPL_TOKENS
 
-Pricing is shown in cents per 1M tokens.
+Pricing is shown in dollars per 1M tokens.
 
 ### Exact Match (JSON)
 
