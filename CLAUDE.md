@@ -18,7 +18,7 @@ pip install -r requirements.txt
 # Examples
 ./ormodels.py -h                        # Show help
 ./ormodels.py -f claude                 # Search for Claude models
-./ormodels.py -f anthropic/claude-3.5-sonnet  # Exact ID match (full JSON)
+./ormodels.py -f anthropic/claude-3.5-sonnet  # Exact ID match (full YAML)
 ./ormodels.py -f claude -f gemini             # Combine multiple searches
 ```
 
@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 ## Table Output Columns
 
-ID, NAME, CREATED (YYYY-MM-DD), CONTEXT_LENGTH, MODALITY, TOKENIZER, PROMPT ($/1M), COMPLETION ($/1M), MAX_COMPL_TOKENS
+ID, NAME, CREATED (YYYY-MM-DD), CONTEXT_LENGTH (n | nk), MODALITY, TOKENIZER, PROMPT ($/1M), COMPLETION ($/1M), MAX_COMPL_TOKENS (n | nk)
 
 ## Search Behavior
 
@@ -43,6 +43,7 @@ Case-insensitive search across model ID, NAME, and MODALITY fields.
 
 - `requests` - API calls
 - `tabulate` - Table formatting
+- `pyyaml` - YAML output for exact matches
 
 ## Code Structure
 
@@ -52,9 +53,11 @@ ormodels.py
 ├── fetch_models()           - GET /api/v1/models with error handling
 ├── format_price_dollars()   - Convert per-token price to $/1M tokens
 ├── format_timestamp()       - Unix → YYYY-MM-DD
+├── format_tokens()          - Dual format: "256000 | 256k"
+├── format_description()     - Sentence-per-line with 2-space indent
 ├── search_models()          - Case-insensitive filter on id/name/modality
 ├── build_table_row()        - Extract 9 columns from model dict
-├── print_full_model()       - json.dumps with indent
+├── print_full_model()       - YAML output with description first
 ├── print_comparison_table() - tabulate output
 ├── parse_args()             - argparse with -f/--find
 └── main()                   - Entry point

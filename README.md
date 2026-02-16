@@ -22,7 +22,7 @@ pip install -r requirements.txt
 # Combine multiple searches
 ./ormodels.py -f claude -f gemini
 
-# Get full JSON for exact ID match
+# Get full details for exact ID match
 ./ormodels.py -f anthropic/claude-3.5-sonnet
 ```
 
@@ -33,13 +33,14 @@ pip install -r requirements.txt
 When searching, displays a comparison table with columns:
 - ID, NAME, CREATED, CONTEXT_LENGTH, MODALITY, TOKENIZER, PROMPT, COMPLETION, MAX_COMPL_TOKENS
 
-Pricing is shown in dollars per 1M tokens.
+Pricing is shown in dollars per 1M tokens. Token counts show dual format (e.g., `256000 | 256k`).
 
-### Exact Match (JSON)
+### Exact Match (YAML)
 
-When an exact model ID is provided, outputs the full model entry as formatted JSON.
+When an exact model ID is provided, outputs the full model entry in YAML format with description first, followed by prominent fields, then remaining details.
 
 ## Dependencies
 
 - `requests` - API calls
 - `tabulate` - Table formatting
+- `pyyaml` - YAML output
