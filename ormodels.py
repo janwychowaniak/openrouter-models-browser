@@ -1,4 +1,13 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "requests",
+#   "tabulate",
+#   "pyyaml",
+# ]
+# ///
+
 """OpenRouter Models Browser - CLI tool for browsing and comparing AI models."""
 
 import argparse

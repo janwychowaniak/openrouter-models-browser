@@ -4,9 +4,7 @@ A CLI tool for browsing and comparing AI models available through the OpenRouter
 
 ## Installation
 
-```sh
-pip install -r requirements.txt
-```
+Requires [uv](https://docs.astral.sh/uv/). Dependencies are declared inline and installed automatically on first run.
 
 ## Usage
 

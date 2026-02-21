@@ -9,10 +9,7 @@ A Python CLI tool for browsing and comparing AI models available through the Ope
 ## Build Commands
 
 ```sh
-# Install dependencies
-pip install -r requirements.txt
-
-# Run the tool
+# Run the tool (uv handles dependencies automatically)
 ./ormodels.py <query>
 
 # Examples
