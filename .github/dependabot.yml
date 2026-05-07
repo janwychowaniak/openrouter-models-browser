@@ -5,9 +5,23 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    # Supply-chain cooldown: delay version-update PRs so malicious or
+    # broken releases have time to be detected and yanked. Security
+    # advisories (GHSA-driven) come through a separate channel and
+    # are not delayed by these settings.
+    cooldown:
+      default-days: 7
+      semver-major-days: 30
+      semver-minor-days: 7
+      semver-patch-days: 3
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+      semver-major-days: 30
+      semver-minor-days: 7
+      semver-patch-days: 3
