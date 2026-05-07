@@ -1,44 +1,76 @@
-# openrouter-models-browser
+# ormodels
 
-A CLI tool for browsing and comparing AI models available through the OpenRouter API.
+A CLI for browsing and comparing AI models from the [OpenRouter](https://openrouter.ai/) API.
 
 ## Installation
 
-Requires [uv](https://docs.astral.sh/uv/). Dependencies are declared inline and installed automatically on first run.
+```sh
+# Recommended: isolated tool install
+uv tool install ormodels
+# or
+pipx install ormodels
+
+# Or as a regular dependency
+pip install ormodels
+```
+
+Requires Python 3.11+.
 
 ## Usage
 
 ```sh
 # Show help
-./ormodels.py -h
+ormodels -h
 
 # Search for models by name, ID, or modality
-./ormodels.py claude
-./ormodels.py gpt
-./ormodels.py "text->text"
+ormodels claude
+ormodels gpt
+ormodels "text->text"
 
-# Combine multiple searches
-./ormodels.py claude gemini
+# Combine multiple searches (results deduplicated)
+ormodels claude gemini
 
-# Get full details for exact ID match
-./ormodels.py anthropic/claude-3.5-sonnet
+# Get full details for an exact ID match
+ormodels anthropic/claude-3.5-sonnet
+
+# Equivalent module form
+python -m ormodels claude
 ```
 
 ## Output
 
-### Search Results (Table)
+### Search results (table)
 
-When searching, displays a comparison table with columns:
-- ID, NAME, CREATED, CONTEXT_LENGTH, MODALITY, TOKENIZER, PROMPT, COMPLETION, MAX_COMPL_TOKENS
+Comparison table with columns:
+`ID`, `NAME`, `CREATED`, `CONTEXT_LENGTH`, `MODALITY`, `TOKENIZER`, `PROMPT`, `COMPLETION`, `MAX_COMPL_TOKENS`.
 
-Pricing is shown in dollars per 1M tokens. Token counts show dual format (e.g., `256000 | 256k`).
+Pricing is shown in dollars per 1M tokens. Token counts use a dual format (e.g. `256000 | 256k`).
 
-### Exact Match (YAML)
+### Exact match (YAML)
 
-When an exact model ID is provided, outputs the full model entry in YAML format with description first, followed by prominent fields, then remaining details.
+When the query exactly matches a model ID, the full model entry is printed in YAML format with the description first, followed by prominent fields, then remaining details.
 
-## Dependencies
+## Development
 
-- `requests` - API calls
-- `tabulate` - Table formatting
-- `pyyaml` - YAML output
+```sh
+# Set up dev environment
+uv sync --all-groups
+
+# Run quality gates
+uv run ruff format --check .
+uv run ruff check .
+uv run mypy
+uv run pytest
+
+# Run the CLI from source
+uv run ormodels claude
+
+# Build distribution artifacts
+uv build
+```
+
+Publishing is automated via the `Publish` GitHub Actions workflow on a `v*` tag, using PyPI Trusted Publishing (no API token required).
+
+## License
+
+MIT

@@ -1,26 +1,18 @@
-#!/usr/bin/env -S uv run --script
-# /// script
-# requires-python = ">=3.11"
-# dependencies = [
-#   "requests",
-#   "tabulate",
-#   "pyyaml",
-# ]
-# ///
-
 """OpenRouter Models Browser - CLI tool for browsing and comparing AI models."""
+
+from __future__ import annotations
 
 import argparse
 import json
 import re
 import sys
 from datetime import datetime
+from typing import Any, cast
 
 import requests
 import yaml
 from tabulate import tabulate
 
-# Constants
 API_URL = "https://openrouter.ai/api/v1/models"
 TABLE_HEADERS = [
     "ID",
@@ -35,13 +27,13 @@ TABLE_HEADERS = [
 ]
 
 
-def fetch_models():
+def fetch_models() -> list[dict[str, Any]]:
     """Fetch models from OpenRouter API."""
     headers = {"Content-Type": "application/json"}
     try:
         response = requests.get(API_URL, headers=headers, timeout=30)
         response.raise_for_status()
-        return response.json()["data"]
+        return cast(list[dict[str, Any]], response.json()["data"])
     except requests.exceptions.Timeout:
         print("Error: Request timed out", file=sys.stderr)
         sys.exit(1)
@@ -53,7 +45,7 @@ def fetch_models():
         sys.exit(1)
 
 
-def format_price_dollars(price_str):
+def format_price_dollars(price_str: str | None) -> str:
     """Convert per-token price string to dollars per 1M tokens.
 
     API gives per-token price in dollars (e.g., "0.00000025").
@@ -69,7 +61,7 @@ def format_price_dollars(price_str):
         return "N/A"
 
 
-def format_timestamp(unix_ts):
+def format_timestamp(unix_ts: int | float | None) -> str:
     """Convert Unix timestamp to YYYY-MM-DD format."""
     if not unix_ts:
         return "N/A"
@@ -79,19 +71,19 @@ def format_timestamp(unix_ts):
         return "N/A"
 
 
-def format_tokens(count):
+def format_tokens(count: int | str | None) -> str:
     """Format token count as 'NUMBER | NUMBERk' for easy copy and comprehension."""
     if not count:
         return "N/A"
     try:
-        count = int(count)
-        k_value = count // 1000
-        return f"{count} | {k_value}k"
+        n = int(count)
+        k_value = n // 1000
+        return f"{n} | {k_value}k"
     except (ValueError, TypeError):
         return "N/A"
 
 
-def search_models(models, query):
+def search_models(models: list[dict[str, Any]], query: str) -> list[dict[str, Any]]:
     """Case-insensitive search across id, name, and modality fields."""
     query_lower = query.lower()
     matches = []
@@ -105,7 +97,7 @@ def search_models(models, query):
     return matches
 
 
-def build_table_row(model):
+def build_table_row(model: dict[str, Any]) -> list[str]:
     """Extract 9 columns from model dict for table display."""
     architecture = model.get("architecture", {})
     pricing = model.get("pricing", {})
@@ -124,32 +116,28 @@ def build_table_row(model):
     ]
 
 
-def format_description(desc):
+def format_description(desc: str | None) -> str:
     """Format description with sentence-per-line, 2-space indent."""
     if not desc:
         return "  (no description)"
-    # Split on sentence boundaries (. followed by space or newline)
-    sentences = re.split(r'\.(?:\s+|\n)', desc.strip())
+    sentences = re.split(r"\.(?:\s+|\n)", desc.strip())
     lines = []
     for s in sentences:
         s = s.strip()
         if s:
-            # Add period back if not ending with punctuation
-            if not s.endswith(('.', '!', '?')):
-                s += '.'
+            if not s.endswith((".", "!", "?")):
+                s += "."
             lines.append(f"  {s}")
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
-def print_full_model(model):
+def print_full_model(model: dict[str, Any]) -> None:
     """Print full model entry in YAML-ish format with description first."""
     model = model.copy()
 
-    # Extract and format description
     desc = model.pop("description", "")
     print(f"\ndescription:\n{format_description(desc)}\n")
 
-    # Prominent fields with aligned colons
     prominent = ["name", "id", "canonical_slug", "hugging_face_id", "created", "context_length"]
     max_len = max(len(k) for k in prominent)
 
@@ -163,19 +151,18 @@ def print_full_model(model):
 
     print()
 
-    # Rest as YAML
     print(yaml.dump(model, default_flow_style=False, allow_unicode=True, sort_keys=False), end="")
 
     print()
 
 
-def print_comparison_table(models):
+def print_comparison_table(models: list[dict[str, Any]]) -> None:
     """Print models as a formatted comparison table."""
     rows = [build_table_row(model) for model in models]
     print(tabulate(rows, headers=TABLE_HEADERS, tablefmt="simple"))
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
         description="Browse and compare AI models from OpenRouter API",
@@ -194,12 +181,13 @@ Pricing is shown in dollars per 1M tokens.
         "query",
         nargs="*",
         metavar="QUERY",
-        help="Search for models by ID, name, or modality. Exact ID match (single query) shows full YAML.",
+        help="Search for models by ID, name, or modality. "
+        "Exact ID match (single query) shows full YAML.",
     )
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
     """Main entry point."""
     args = parse_args()
 
@@ -209,7 +197,6 @@ def main():
 
     models = fetch_models()
 
-    # Single query: check for exact ID match first
     if len(args.query) == 1:
         query = args.query[0]
         for model in models:
@@ -217,7 +204,6 @@ def main():
                 print_full_model(model)
                 return
 
-    # Collect matches from all queries (deduplicated by id)
     seen_ids = set()
     all_matches = []
     for query in args.query:
