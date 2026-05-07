@@ -303,7 +303,7 @@ wheels = [
 ]
 
 [[package]]
-name = "ormodels"
+name = "openrouter-models-browser"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

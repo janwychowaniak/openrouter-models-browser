@@ -1,5 +1,5 @@
 [project]
-name = "ormodels"
+name = "openrouter-models-browser"
 version = "0.1.0"
 description = "CLI for browsing and comparing AI models from the OpenRouter API"
 readme = "README.md"

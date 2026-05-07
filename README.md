@@ -4,14 +4,16 @@ A CLI for browsing and comparing AI models from the [OpenRouter](https://openrou
 
 ## Installation
 
+The command is `ormodels`; the PyPI distribution name is `openrouter-models-browser`.
+
 ```sh
 # Recommended: isolated tool install
-uv tool install ormodels
+uv tool install openrouter-models-browser
 # or
-pipx install ormodels
+pipx install openrouter-models-browser
 
 # Or as a regular dependency
-pip install ormodels
+pip install openrouter-models-browser
 ```
 
 Requires Python 3.11+.
