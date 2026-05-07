@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A Python CLI tool for browsing and comparing AI models available through the OpenRouter API (`https://openrouter.ai/api/v1/models`). Distributed on PyPI as `ormodels`.
+A Python CLI tool for browsing and comparing AI models available through the OpenRouter API (`https://openrouter.ai/api/v1/models`). Distributed on PyPI as `openrouter-models-browser`; installs an `ormodels` console script (the import package and command share that shorter name).
 
 ## Build Commands
 

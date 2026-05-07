@@ -1,5 +1,8 @@
 # ormodels
 
+[![PyPI version](https://img.shields.io/pypi/v/openrouter-models-browser)](https://pypi.org/project/openrouter-models-browser/)
+[![Python versions](https://img.shields.io/pypi/pyversions/openrouter-models-browser)](https://pypi.org/project/openrouter-models-browser/)
+
 A CLI for browsing and comparing AI models from the [OpenRouter](https://openrouter.ai/) API.
 
 ## Installation
